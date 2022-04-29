@@ -1,0 +1,46 @@
+There is a LOT of free space in Castlevania (marked with FF).
+First, some 600 bytes at 3B11.
+Then, some 1500 bytes at 13418.
+Then, about 4800 bytes at 15A48 (not kidding! there's space till the end of the ROM Bank!)
+(actually it might be 9600 bytes, idk)
+
+PPU Bus area that interests me (HUD at the top) is around 2040.
+
+At around $CC6C on JP (CC81 on US), there's an instruction that reads and probably draws from the score.
+Edit this to your timer or something idk
+
+I think $00 is some kind of scratch memory address used to store temporary values
+
+Seems like 7F0 is actually used, so I should probably change value here
+
+JMP $a356 - is what is present toward the routine that draws timer values. There is where the stuff that actually draws the timer is probalby located at.
+Put a breakpoint on execution at that address and watch what happens.
+
+seems like, in the file, the location might be 1A367
+or 1E367
+
+Gonna try hijacking at C094
+
+bank 0 is loaded during NMI, probably need to restore that after my code
+
+okay, so after some consideration, I think I am just gonna draw the timer on my own
+and just nullify the score writing behavior.
+That is because it seems like that score drawing routine only updates every two frames
+So I'm better off just writing that on my own
+also this would allow me to overwrite the SCORE- graphic and make the timer look a little nicer.
+
+
+To override "PLAYER", write to PPU $2060
+To override "ENEMY"	 write to PPU $2080
+
+looks like either $F6 or $F8 contain the current input:
+0x1 = right
+0x2 = left
+0x4 = down
+0x8 = up
+0x10 = start
+0x20 = select
+0x40 = B
+0x80 = A
+
+$F5 and $F7 are the same, but they only register the input for one frame.

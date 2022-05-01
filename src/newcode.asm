@@ -123,13 +123,24 @@ BVC check_menu_to_draw
 check_for_stage_06:
 LDA {currstage}
 CMP #$06
-BNE no_sg
+BNE check_for_stage_17
 LDA {currsubstage}
 CMP #$00
-BNE no_sg
+BNE check_for_stage_17
 LDA {06_sg}
 STA {current_sg_to_practice}
 BVC check_menu_to_draw
+check_for_stage_17:
+LDA {currstage}
+CMP #$11
+BNE no_sg
+LDA {currsubstage}
+CMP #$01
+BNE no_sg
+LDA {17_top_or_bottom}
+STA {current_sg_to_practice}
+BVC check_menu_to_draw
+
 no_sg:
 
 
@@ -145,7 +156,7 @@ check_menu_to_draw:
 
 LDA {current_sg_to_practice}
 CMP {14_top_single_or_double}
-BCC set_anything_else
+BCC anything_else_or_17_sg
 BEQ set_14_top_single_or_double_menu
 
 // 14_simple_or_advanced
@@ -160,10 +171,19 @@ set_14_top_single_or_double_menu:
 LDY #$0A
 BVC draw_menu
 
+anything_else_or_17_sg:
+CMP {17_top_or_bottom}
+BCC set_anything_else
+
+// 17_top_or_bottom
+LDY #$14
+BVC draw_menu
+
+
 set_anything_else:
 
 // Anything else
-LDY #$14
+LDY #$1E
 
 draw_menu:
 LDA #$20
@@ -240,7 +260,9 @@ STA {PPU_DATA}
 skip:
 LDA {current_sg_to_practice}
 CMP #$F0
-BCC on_mode_selection_menu
+BCS not_on_mode_selection_menu
+JMP {mode_selection_menu}
+not_on_mode_selection_menu:
 LDA {currinput_oneframe}
 AND #$C0
 CMP #$80
@@ -257,26 +279,36 @@ CMP #$00
 BNE set_second_option
 
 // Setting first option
-LDA #$00
-STA {current_cursor_position}
+// LDA #$00
+// STA {current_cursor_position}
 LDA {current_sg_to_practice}
 CMP {14_simple_or_advanced}
-BNE set_14_top_single_or_double_options_top
+BNE check_for_17_bottom_or_14_snl
 
-// setting 14_simple_or_advanced options top
+// setting 14_simple option (top option)
 LDA {14_simple_index}
 STA {current_sg_to_practice}
 LDA #$01
 STA {already_selected_sg_from_top_menu}
 JMP {done_offset}
 
-set_14_top_single_or_double_options_top:
+check_for_17_bottom_or_14_snl:
+CMP {14_top_single_or_double}
+BNE set_17_btm
+
+// setting 14 top single (top option)
 LDA {14_top_single_index}
 STA {current_sg_to_practice}
 LDA #$01
 STA {already_selected_sg_from_top_menu}
 JMP {done_offset}
 
+set_17_btm:
+LDA {17_sg_bottom}
+STA {current_sg_to_practice}
+LDA #$01
+STA {already_selected_sg_from_top_menu}
+JMP {done_offset}
 
 
 set_second_option:
@@ -284,16 +316,28 @@ LDA #$00
 STA {current_cursor_position}
 LDA {current_sg_to_practice}
 CMP {14_simple_or_advanced}
-BNE set_14_top_single_or_double_options_bottom
-// setting 14_simple_or_advanced options bottom
+BNE check_for_17_top_or_14_dbl
+
+// setting 14_advanced option (bottom option)
 LDA {14_advanced_index}
 STA {current_sg_to_practice}
 LDA #$01
 STA {already_selected_sg_from_top_menu}
 JMP {done_offset}
 
-set_14_top_single_or_double_options_bottom:
+check_for_17_top_or_14_dbl:
+CMP {14_top_single_or_double}
+BNE set_17_top
+
+// setting 14 top double (bottom option)
 LDA {14_top_double_index}
+STA {current_sg_to_practice}
+LDA #$01
+STA {already_selected_sg_from_top_menu}
+JMP {done_offset}
+
+set_17_top:
+LDA {17_sg_top}
 STA {current_sg_to_practice}
 LDA #$01
 STA {already_selected_sg_from_top_menu}
@@ -307,6 +351,7 @@ JMP {done_offset}
 
 
 
+org {mode_selection_menu}
 on_mode_selection_menu:
 LDA {currinput_oneframe}
 AND #$C0
@@ -928,16 +973,20 @@ RTS
 
 org {menu_tables}
 
-// FF
+// FF = 14 simple or advanced
 // Y = 0x0
 db $D1,$D4,$F2,$EF,$EB // 14SPL
 db $D1,$D4,$E0,$E3,$F5 // 14ADV
-// FE
+// FE = 14 top single or double
 // Y = 0xA,
 db $F3,$EF,$F2,$ED,$EB // TPSNL
 db $F3,$EF,$E3,$E1,$EB // TPDBL
-// Anything else
+// FD = 17 bottom or top
 // Y = 0x14
+db $D1,$D7,$E1,$F3,$EC // 17BTM
+db $D1,$D7,$F3,$EE,$EF // 17TOP
+// Anything else
+// Y = 0x1E
 db $D2,$DD,$D1,$D4,$00 // 2-14
 db $D4,$DD,$D1,$D2,$00 // 4-12
 
@@ -970,10 +1019,9 @@ db $00,$04,$5B,$07,$09,$04,$3B,$0D,$11
 db $01,$00,$A4,$07,$09,$00,$A4,$07,$09
 // stage 06 crushers
 db $00,$01,$D9,$07,$09,$01,$B9,$0D,$11
-// stage 17 placeholder
-db $00,$00,$00,$00,$00,$00,$00,$00,$00
-// stage 17 placeholder
-db $00,$00,$00,$00,$00,$00,$00,$00,$00
-// stage 17 placeholder
+// stage 17 bottom route
+db $00,$02,$19,$07,$09,$01,$FB,$0D,$11
+// stage 17 top route
+db $00,$02,$1B,$07,$09,$01,$FB,$0D,$11
 
 

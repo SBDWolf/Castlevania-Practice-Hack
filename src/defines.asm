@@ -70,6 +70,7 @@ define late_failure_offset $A180
 define failure_amount_offset $A200
 define idle_leftward $A280
 define idle_rightward $A300
+define mode_selection_menu $A580
 
 // tables
 define menu_tables $A380
@@ -82,6 +83,9 @@ define 14_top_single_index #$12
 define 14_top_double_index #$1B
 define 13_sg #$24
 define 06_sg #$2D
+define 17_sg_bottom #$36
+define 17_sg_top #$3F
 define 14_simple_or_advanced #$FF
 define 14_top_single_or_double #$FE
+define 17_top_or_bottom #$FD
 

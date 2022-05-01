@@ -493,6 +493,12 @@ BNE not_moving_right
 // this case is for moving right immediately after a frame where you moved left
 // todo: I think I need to check the high byte first, it won't matter for 14 glitch but it will for expanding the code to other SG's
 // actually, maybe not
+// actually, yes
+
+LDA {simon_x_high_byte}
+CMP {target_pixel_high_byte}
+BCC failure_to_turning_right_too_late
+
 SEC
 CLV
 LDA {simon_x_low_byte}
@@ -586,6 +592,12 @@ LDA {simon_substate}
 AND #$02
 CMP #$02
 BNE not_moving_left
+
+
+LDA {target_pixel_high_byte}
+CMP {simon_x_high_byte}
+BCC failure_to_turning_right_too_late
+
 CLC
 CLV
 LDA {simon_x_low_byte}
@@ -677,12 +689,12 @@ CMP #$01
 BEQ continue
 JMP {done_offset}
 continue:
-LDA {simon_x_low_byte}
-CMP {target_pixel_low_byte}
-BCC failure_to_undershooting_pixel
-BNE failure_to_overshooting_pixel
 LDA {simon_x_high_byte}
 CMP {target_pixel_high_byte}
+BCC failure_to_undershooting_pixel
+BNE failure_to_overshooting_pixel
+LDA {simon_x_low_byte}
+CMP {target_pixel_low_byte}
 BCC failure_to_undershooting_pixel
 BNE failure_to_overshooting_pixel
 LDA #$00
@@ -717,12 +729,12 @@ CMP #$01
 BEQ continue2
 JMP {done_offset}
 continue2:
-LDA {simon_x_low_byte}
-CMP {target_pixel_low_byte}
-BCC failure_to_overshooting_pixel2
-BNE failure_to_undershooting_pixel2
 LDA {simon_x_high_byte}
 CMP {target_pixel_high_byte}
+BCC failure_to_overshooting_pixel2
+BNE failure_to_undershooting_pixel2
+LDA {simon_x_low_byte}
+CMP {target_pixel_low_byte}
 BCC failure_to_overshooting_pixel2
 BNE failure_to_undershooting_pixel2
 LDA #$00

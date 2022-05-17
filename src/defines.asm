@@ -34,7 +34,7 @@ define currinput_continuous $F6
 // This has different bits set depending on a few things:
 // 
 // 0x0 = not moving
-// 0z1 = moving right
+// 0x1 = moving right
 // 0x2 = moving left
 // 0x4 = crouching
 // 0x40 = attacking
@@ -43,6 +43,8 @@ define currinput_continuous $F6
 // These can be combined, so if simon is jumping to the right, the value contained will be 0x81
 
 define simon_substate $584
+
+define simon_health $45
 
 // new addresses used by my code
 define current_cursor_position $7E0
@@ -58,6 +60,8 @@ define failure_pixel_count $7F1
 define failed_sg_flag $7F2
 define current_sg_to_practice $7F3
 define already_selected_sg_from_top_menu $7DB
+define simon_prevx_high_byte $7D9
+define simon_prevx_low_byte $7DA
 
 
 // defining some ROM addresses of MY OWN CODE here and using them as variables, because labels seem broken when using the jmp instruction...

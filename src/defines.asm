@@ -7,6 +7,7 @@ define PPU_DATA $2007
 define simon_x_low_byte $40
 define simon_x_high_byte $41
 
+define simon_health $45
 
 define game_state $18
 
@@ -56,36 +57,18 @@ define started_moving_flag $7EB
 define sg_phase_count_target $7F0
 define failure_pixel_count $7F1
 define failed_sg_flag $7F2
-define current_sg_to_practice $7F3
-define already_selected_sg_from_top_menu $7DB
+define current_sg_to_practice $7E3
 
 
 // defining some ROM addresses of MY OWN CODE here and using them as variables, because labels seem broken when using the jmp instruction...
 define done_offset $A000
-define sg_trainer_code $9E00
+define sg_trainer_code $9D00
 define mark_success $A005
-define sg_success_offset $A480
+define sg_success_offset $A080
 define early_failure_offset $A100
 define late_failure_offset $A180
 define failure_amount_offset $A200
 define idle_leftward $A280
 define idle_rightward $A300
-define mode_selection_menu $A580
 
-// tables
-define menu_tables $A380
-define sg_tables $A400
-
-// constants
-define 14_simple_index #$00
-define 14_advanced_index #$09
-define 14_top_single_index #$12
-define 14_top_double_index #$1B
-define 13_sg #$24
-define 06_sg #$2D
-define 17_sg_bottom #$36
-define 17_sg_top #$3F
-define 14_simple_or_advanced #$FF
-define 14_top_single_or_double #$FE
-define 17_top_or_bottom #$FD
 

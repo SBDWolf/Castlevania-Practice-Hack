@@ -21,13 +21,13 @@ LDA #$B1
 STA {PPU_ADDR}
 LDA {PPU_DATA}
 CMP #$69
-BNE getmaxhealth
+BNE setmaxhealth
 
 LDA #$00
 STA {simon_health}
 BVC done
 
-getmaxhealth:
+setmaxhealth:
 LDA #$40
 STA {simon_health}
 

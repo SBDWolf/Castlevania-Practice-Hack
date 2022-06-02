@@ -9,7 +9,7 @@ BMI skip_17
 
 //If multi_block practice disabled then skip first block
 LDA {is_multi_block_enabled}
-CMP {disable_value}
+CMP {disable_value_multi_block}
 BEQ stage_17_block_2
 
 stage_17_block_1:

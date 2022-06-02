@@ -1,13 +1,35 @@
+// Check if in a valid game state, if not don't run this tool
+LDA {game_state}
+CMP #$05
+BCC death_invalid_state
+CMP #$0D
+BCS death_invalid_state
+JMP run_tool
+death_invalid_state:
+JMP done
+
+
+
+
+run_tool:
+// this prints the status of the death tool if on the map screen
+// this makes it persists through levels without having to print it every frame
+LDA {currstage}
+CMP #$12
+BNE manage_toggles
+JSR death_print_status
+
 // Check if user is configuring death tool
 // If so, included code will properly configure it.
+manage_toggles:
 incsrc "src/death_manage_toggles.asm"
 
 
 //If tool is not enabled, we skip everything else
 should_execute_stage_checks:
 LDA {is_death_tool_enabled}
-CMP {disable_value}
-BNE start_stage_checks
+CMP {enable_value}
+BEQ start_stage_checks
 JMP done
 
 
@@ -53,5 +75,8 @@ STA {simon_health}
 
 done:
 RTS
+
+death_print_status:
+incsrc "src/death_print_status.asm"
 
 

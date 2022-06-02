@@ -23,17 +23,19 @@ BNE check_if_a_pressed
 
 
 LDA {is_death_tool_enabled}
-CMP {disable_value}
-BNE set_to_tool_disable_value 
+CMP {enable_value}
+BNE set_to_tool_enable_value 
 LDA #$00
 JMP update_tool_enable_value
 
-set_to_tool_disable_value:
-LDA {disable_value}
+set_to_tool_enable_value:
+LDA {enable_value}
 
 
 update_tool_enable_value:
 STA {is_death_tool_enabled}
+// update new status on screen
+JSR death_print_status
 JMP skip_all_death_this_frame
 
 
@@ -45,16 +47,18 @@ BNE skip_all_death_this_frame
 
 
 LDA {is_multi_block_enabled}
-CMP {disable_value}
+CMP {disable_value_multi_block}
 BNE set_to_multi_block_disable_value 
 LDA #$00
 JMP update_multi_block_enable_value
 
 set_to_multi_block_disable_value:
-LDA {disable_value}
+LDA {disable_value_multi_block}
 
 update_multi_block_enable_value:
 STA {is_multi_block_enabled}
+// update new status on screen
+JSR death_print_status
 
 skip_all_death_this_frame:
 JMP done

@@ -96,4 +96,5 @@ define total_lag_frame_counter $7F3
 define is_death_tool_enabled $F0
 // seems like $F1 is used by the demo
 define is_multi_block_enabled $F1
-define disable_value #$22 //1 out of 256 chance of this being set if ram is random on startup
+define enable_value #$22 //1 out of 256 chance of this being set if ram is random on startup
+define disable_value_multi_block #$22

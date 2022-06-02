@@ -11,6 +11,8 @@ BNE valid_level
 JMP on_map_screen
 valid_level:
 LDA {game_state}
+CMP #$04
+BEQ on_intro_screen
 CMP #$05
 BCC invalid_state
 CMP #$0D
@@ -28,6 +30,21 @@ JMP timer_done
 // currstage increases at different timings depending on whether the door is left or right facing...
 // so skipping this code during door transition acts as a workaround to make behavior consistent
 //
+
+on_intro_screen:
+// since the demo can make the timer run for a small bit, i need to reset the timer on the intro screen
+LDA #$00
+STA {curr_timer_m}
+STA {curr_timer_s}
+STA {curr_timer_f}
+STA {prev_timer_m}
+STA {prev_timer_s}
+STA {prev_timer_f}
+STA {level_timer_m}
+STA {level_timer_s}
+STA {level_timer_f}
+STA {total_lag_frame_counter}
+JMP timer_done
 
 
 

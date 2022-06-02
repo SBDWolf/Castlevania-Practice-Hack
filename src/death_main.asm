@@ -8,9 +8,6 @@ JMP run_tool
 death_invalid_state:
 JMP done
 
-
-
-
 run_tool:
 // this prints the status of the death tool if on the map screen
 // this makes it persists through levels without having to print it every frame

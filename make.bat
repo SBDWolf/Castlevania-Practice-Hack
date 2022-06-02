@@ -1,4 +1,5 @@
+IF NOT EXIST output mkdir output
 del /q output
-xcopy target output
-xkas -o output/AD.nes src/main.asm
+copy source_rom\source.nes output\AD.nes
+tools\xkas -o output/AD.nes src/main.asm
 pause
